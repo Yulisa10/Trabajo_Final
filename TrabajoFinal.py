@@ -262,11 +262,11 @@ elif seccion == "Modelo de redes neuronales":
     st.subheader("Modelo planteado con redes neuronales")
 
     def load_model():
-    """Cargar el modelo y sus pesos desde el archivo model_weights.pkl."""
-    filename = 'best_model.pkl.gz'
-    with gzip.open(filename, 'rb') as f:
-        model = pickle.load(f)
-    return model
+        """Cargar el modelo y sus pesos desde el archivo model_weights.pkl."""
+        filename = 'best_model.pkl.gz'
+        with gzip.open(filename, 'rb') as f:
+            model = pickle.load(f)
+        return model
     model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
 
     
