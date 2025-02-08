@@ -31,8 +31,6 @@ seccion = st.sidebar.radio("Tabla de Contenidos",
                             "Boxplots", 
                             "Conclusión: Selección del Mejor Modelo",  # Nueva ubicación
                             "Modelo XGBoost",  # Nueva sección
-                            "Entrenamiento del Modelo MLP", 
-                            "Hacer una Predicción",
                            "Modelo de redes neuronales"])
 
 # Cargar los datos
@@ -246,32 +244,6 @@ elif seccion == "Modelo XGBoost":
 
 
 
-
-
-  
-    
-elif seccion == "Entrenamiento del Modelo MLP":
-    st.subheader("Entrenamiento del Modelo MLP")
-    if st.button("Entrenar Modelo"):
-        model = train_mlp()
-        st.success("Modelo entrenado con éxito")
-        st.session_state["mlp_model"] = model
-
-elif seccion == "Hacer una Predicción":
-    st.subheader("Hacer una Predicción")
-    def user_input():
-        features = {}
-        for col in df.drop(columns=["Occupancy"], errors='ignore').columns:
-            features[col] = st.slider(col, float(df[col].min()), float(df[col].max()), float(df[col].mean()))
-        return pd.DataFrame([features])
-    
-    if "mlp_model" in st.session_state:
-        input_data = user_input()
-        input_scaled = scaler.transform(input_data)
-        prediction = st.session_state["mlp_model"].predict(input_scaled)
-        occupancy = "Ocupado" if prediction[0][0] > 0.5 else "No Ocupado"
-        st.write(f"Predicción: {occupancy}")
-
 elif seccion == "Modelo de redes neuronales":
     st.subheader("Modelo planteado con redes neuronales")
 
@@ -281,6 +253,7 @@ elif seccion == "Modelo de redes neuronales":
         with gzip.open(filename, 'rb') as f:
             model = pickle.load(f)
         return model
+    model=load_model()
     model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
 
     
