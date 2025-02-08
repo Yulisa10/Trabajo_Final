@@ -212,8 +212,8 @@ elif seccion == "Modelo XGBoost":
         return model
     # Cargar el modelo desde el archivo comprimido
 
-  # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
-     if hasattr(model, "best_params_"):
+     # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
+    if hasattr(model, "best_params_"):
         best_params = model.best_params_
     else:
         best_params = "No se encontraron hiperparámetros óptimos en el modelo."
@@ -241,15 +241,6 @@ elif seccion == "Modelo XGBoost":
         prediction = model.predict(input_array)[0]
         st.subheader("Resultado de la Predicción")
         st.write(f"Predicción del modelo: {prediction}")
-
-
-
-
-
-
-
-
-
 
 
 
