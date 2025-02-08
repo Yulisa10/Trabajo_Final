@@ -213,10 +213,10 @@ elif seccion == "Modelo XGBoost":
     
     # Predicciones y evaluación del modelo
     
-    accuracy = accuracy_score(model)
-    f1 = f1_score(model)
-    recall = recall_score(model)
-    precision = precision_score(model)
+        accuracy = accuracy_score(model)
+        f1 = f1_score(model)
+        recall = recall_score(model)
+        precision = precision_score(model)
 
     # Mostrar métricas de evaluación
     st.write(f'**Accuracy del modelo en datos de prueba:** {round(accuracy * 100, 2)}%')
