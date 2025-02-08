@@ -211,14 +211,7 @@ elif seccion == "Modelo XGBoost":
             model = pickle.load(f)
         return model
     # Cargar el modelo desde el archivo comprimido
-def load_model():
-    with gzip.open("xgb_model.pkl.gz", "rb") as f:
-        model = pickle.load(f)
-    return model
 
-        # Cargar el modelo
-        model = load_model()
-        
         # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
         if hasattr(model, "best_params_"):
             best_params = model.best_params_
