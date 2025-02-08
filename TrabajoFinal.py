@@ -212,35 +212,35 @@ elif seccion == "Modelo XGBoost":
         return model
     # Cargar el modelo desde el archivo comprimido
 
-        # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
-        if hasattr(model, "best_params_"):
-            best_params = model.best_params_
-        else:
-            best_params = "No se encontraron hiperparámetros óptimos en el modelo."
+  # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
+     if hasattr(model, "best_params_"):
+        best_params = model.best_params_
+    else:
+        best_params = "No se encontraron hiperparámetros óptimos en el modelo."
         
         # Configuración de la interfaz en Streamlit
-        st.title("Predicción con Modelo XGBoost")
-        
+    st.title("Predicción con Modelo XGBoost")
+    
         # Mostrar los mejores hiperparámetros
-        st.subheader("Mejores Hiperparámetros del Modelo")
-        st.write(best_params)
+    st.subheader("Mejores Hiperparámetros del Modelo")
+    st.write(best_params)
         
         # Entrada manual de valores
-        st.subheader("Ingrese los valores para la predicción")
-        n_features = model.get_booster().num_features()
-        user_input = []
-        for i in range(n_features):
-            value = st.number_input(f"Característica {i+1}", value=0.0)
-            user_input.append(value)
+    st.subheader("Ingrese los valores para la predicción")
+    n_features = model.get_booster().num_features()
+    user_input = []
+    for i in range(n_features):
+        value = st.number_input(f"Característica {i+1}", value=0.0)
+        user_input.append(value)
         
         # Convertir entrada a array numpy
-        input_array = np.array(user_input).reshape(1, -1)
+    input_array = np.array(user_input).reshape(1, -1)
         
         # Realizar predicción si el usuario lo solicita
-        if st.button("Predecir"):
-            prediction = model.predict(input_array)[0]
-            st.subheader("Resultado de la Predicción")
-            st.write(f"Predicción del modelo: {prediction}")
+    if st.button("Predecir"):
+        prediction = model.predict(input_array)[0]
+        st.subheader("Resultado de la Predicción")
+        st.write(f"Predicción del modelo: {prediction}")
 
 
 
