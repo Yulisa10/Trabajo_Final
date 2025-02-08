@@ -210,6 +210,7 @@ elif seccion == "Modelo XGBoost":
         with gzip.open(filename, 'rb') as f:
             model = pickle.load(f)
         return model
+    model=load_model()
     # Cargar el modelo desde el archivo comprimido
 
      # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
