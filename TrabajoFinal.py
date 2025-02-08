@@ -227,7 +227,7 @@ elif seccion == "Modelo XGBoost":
         
         # Entrada manual de valores
     st.subheader("Ingrese los valores para la predicción")
-    n_features = model.get_booster().num_features()
+    n_features = 9#model.get_booster().num_features()
     user_input = []
     for i in range(n_features):
         value = st.number_input(f"Característica {i+1}", value=0.0)
