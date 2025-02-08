@@ -213,17 +213,17 @@ elif seccion == "Modelo XGBoost":
     # Cargar el modelo desde el archivo comprimido
 
      # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
-    if hasattr(model, "best_params_"):
-        best_params = model.best_params_
-    else:
-        best_params = "No se encontraron hiperparámetros óptimos en el modelo."
+    #if hasattr(model, "best_params_"):
+    #    best_params = model.best_params_
+    #else:
+     #   best_params = "No se encontraron hiperparámetros óptimos en el modelo."
         
         # Configuración de la interfaz en Streamlit
     st.title("Predicción con Modelo XGBoost")
     
         # Mostrar los mejores hiperparámetros
-    st.subheader("Mejores Hiperparámetros del Modelo")
-    st.write(best_params)
+    #st.subheader("Mejores Hiperparámetros del Modelo")
+    #st.write(best_params)
         
         # Entrada manual de valores
     st.subheader("Ingrese los valores para la predicción")
