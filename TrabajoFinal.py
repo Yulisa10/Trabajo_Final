@@ -222,8 +222,6 @@ except Exception as e:
 
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
-    
-    # Cargar el modelo desde el archivo comprimido
     def load_model():
         filename = 'xgb_model.pkl.gz'
         with gzip.open(filename, 'rb') as f:
