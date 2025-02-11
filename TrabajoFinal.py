@@ -213,13 +213,13 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
 
 model_path1 = "xgb_model.pkl.gz"  # Asegúrate de usar el archivo correcto
 
-# Cargar el modelo
-try:
-    with gzip.open(model_path1, "rb") as f:
-        model = pickle.load(f)
-    print("Modelo cargado correctamente.")
-except Exception as e:
-    print(f"Error al cargar el modelo: {e}")
+    # Cargar el modelo
+    try:
+        with gzip.open(model_path1, "rb") as f:
+            model = pickle.load(f)
+        print("Modelo cargado correctamente.")
+    except Exception as e:
+        print(f"Error al cargar el modelo: {e}")
 
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
