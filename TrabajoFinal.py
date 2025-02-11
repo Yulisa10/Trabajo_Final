@@ -244,9 +244,8 @@ except Exception as e:
 elif seccion == "Modelo de redes neuronales":
     st.subheader("Modelo planteado con redes neuronales")
 
-    def load_model():
-        """Cargar el modelo y sus pesos desde el archivo model_weights.pkl."""
-filename = "model.pkl.gz"
+     # Cargar el modelo
+filename = "best_model.pkl.gz"
 with gzip.open(filename, "rb") as f:
     model = pickle.load(f)
     model = load_model()
