@@ -202,7 +202,6 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
     ### Conclusión Final:
     El **XGBoost Classifier** fue seleccionado como el mejor modelo debido a su alto rendimiento, capacidad para manejar el desequilibrio de clases, interpretabilidad de las características, eficiencia y robustez ante el overfitting. Estos factores lo convierten en la opción más adecuada para la tarea de predecir la ocupación de habitaciones, superando a otros modelos como Random Forest, Decision Tree, KNN y la red neuronal en este contexto específico.
     """)
-
 # Cargar el modelo XGBoost
 def load_model(filename="xgb_model.pkl.gz"):
     with gzip.open(filename, "rb") as f:
@@ -231,7 +230,7 @@ if st.button("Predecir"):
     prediction = model.predict(input_array)[0]
     resultado = "🟢 Ocupado" if prediction == 1 else "🔴 No Ocupado"
     st.subheader("Resultado de la Predicción")
-    st.markdown(f"### {resultado}"
+    st.markdown(f"### {resultado}")
 
 # Función para cargar el modelo
 def cargar_modelo():
