@@ -223,12 +223,6 @@ try:
 except Exception as e:
     print("Error en la predicción:", e)
 
-# Cargar el modelo
-model = load_model()
-    
-    # Configuración de la interfaz en Streamlit
-    st.title("Predicción con Modelo XGBoost")
-    
     # Entrada manual de valores
     st.subheader("Ingrese los valores para la predicción")
     n_features = X.shape[1]  # Número de características en el conjunto de datos
