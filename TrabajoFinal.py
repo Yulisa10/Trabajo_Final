@@ -16,7 +16,6 @@ import pickle
 import xgboost as xgb
 
 
-
 # Mostrar la imagen solo en la página de inicio
 st.title("Análisis de Detección de Ocupación")
 st.write("Grupo: Yulisa Ortiz Giraldo y Juan Pablo Noreña Londoño")
