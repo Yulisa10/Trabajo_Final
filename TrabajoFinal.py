@@ -240,6 +240,8 @@ except Exception as e:
         st.subheader("Resultado de la Predicción")
         st.write(f"Predicción del modelo: {'Ocupado' if prediction == 1 else 'No Ocupado'}")
 
+
+
 # Sección del modelo de redes neuronales
 elif seccion == "Modelo de redes neuronales":
     st.subheader("Modelo planteado con redes neuronales")
