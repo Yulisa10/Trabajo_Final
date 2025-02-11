@@ -232,31 +232,6 @@ if st.button("Predecir"):
     st.subheader("Resultado de la Predicción")
     st.markdown(f"### {resultado}")
 
-# Función para cargar el modelo
-def cargar_modelo():
-    filename = "best_model.pkl.gz"
-    with gzip.open(filename, "rb") as f:
-        model = pickle.load(f)  # Intentar cargar con pickle
-
-    return model
-
-# Título de la aplicación
-st.title("📊 Predicción con Redes Neuronales")
-
-# Descripción breve
-st.markdown(
-    "### 🧠 Exploración del Modelo de Redes Neuronales\n"
-    "¡Bienvenido! Aquí puedes interactuar con un modelo de redes neuronales y ver cómo realiza predicciones.\n"
-    "Ajusta los valores de entrada y observa la predicción junto con una visualización gráfica. 🎨📈"
-)
-
-# Función para cargar el modelo
-def cargar_modelo():
-    filename = "best_model.pkl.gz"
-    with gzip.open(filename, "rb") as f:
-        modelo = pickle.load(f)
-    return modelo
-
 # Cargar modelo
 modelo = cargar_modelo()
 
