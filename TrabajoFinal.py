@@ -41,7 +41,7 @@ seccion = st.sidebar.radio("Tabla de Contenidos",
                             "Boxplots", 
                             "Conclusión: Selección del Mejor Modelo",  # Nueva ubicación
                             "Modelo XGBoost",  # Nueva sección
-                           "Modelo de redes neuronales"])
+                            "Modelo de redes neuronales"])
 
 # Cargar los datos
 def load_data():
@@ -63,7 +63,6 @@ def preprocess_data(df):
 
 X, y, scaler = preprocess_data(df)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
 
 # Mostrar contenido basado en la selección
 if seccion == "Vista previa de los datos":
@@ -213,55 +212,45 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
 
 model_path1 = "xgb_model.pkl.gz"  # Asegúrate de usar el archivo correcto
 
-    # Cargar el modelo
+# Cargar el modelo XGBoost
 try:
-      with gzip.open(model_path1, "rb") as f:
-            model = pickle.load(f)
-        print("Modelo cargado correctamente.")
-      except Exception as e:
-        print(f"Error al cargar el modelo: {e}")
+    with gzip.open(model_path1, "rb") as f:
+        xgb_model = pickle.load(f)
+    st.write("Modelo XGBoost cargado correctamente.")
+except Exception as e:
+    st.write(f"Error al cargar el modelo XGBoost: {e}")
 
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
+    
+    # Cargar el modelo desde el archivo comprimido
     def load_model():
         filename = 'xgb_model.pkl.gz'
         with gzip.open(filename, 'rb') as f:
             model = pickle.load(f)
         return model
-    model=load_model()
-    # Cargar el modelo desde el archivo comprimido
-
-     # Obtener los mejores hiperparámetros (si el modelo fue ajustado con búsqueda de hiperparámetros)
-    #if hasattr(model, "best_params_"):
-    #    best_params = model.best_params_
-    #else:
-     #   best_params = "No se encontraron hiperparámetros óptimos en el modelo."
-        
-        # Configuración de la interfaz en Streamlit
+    
+    model = load_model()
+    
+    # Configuración de la interfaz en Streamlit
     st.title("Predicción con Modelo XGBoost")
     
-        # Mostrar los mejores hiperparámetros
-    #st.subheader("Mejores Hiperparámetros del Modelo")
-    #st.write(best_params)
-        
-        # Entrada manual de valores
+    # Entrada manual de valores
     st.subheader("Ingrese los valores para la predicción")
-    n_features = 9#model.get_booster().num_features()
+    n_features = X.shape[1]  # Número de características en el conjunto de datos
     user_input = []
     for i in range(n_features):
         value = st.number_input(f"Característica {i+1}", value=0.0)
         user_input.append(value)
         
-        # Convertir entrada a array numpy
+    # Convertir entrada a array numpy
     input_array = np.array(user_input).reshape(1, -1)
         
-        # Realizar predicción si el usuario lo solicita
+    # Realizar predicción si el usuario lo solicita
     if st.button("Predecir"):
         prediction = model.predict(input_array)[0]
         st.subheader("Resultado de la Predicción")
-        st.write(f"Predicción del modelo: {prediction}")
-
-
+        st.write(f"Predicción del modelo: {'Ocupado' if prediction == 1 else 'No Ocupado'}")
 
 elif seccion == "Modelo de redes neuronales":
     st.subheader("Modelo planteado con redes neuronales")
@@ -272,27 +261,29 @@ elif seccion == "Modelo de redes neuronales":
         with gzip.open(filename, 'rb') as f:
             model = pickle.load(f)
         return model
-    model=load_model()
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-
     
-    # Obtención del historial de entrenamiento
-    accuracy = clf.history['accuracy']
-    loss = clf.history['loss']
-
-    # Gráficos de Accuracy y Loss
-    fig, axes = plt.subplots(1, 2, figsize=(10, 3))
-    sns.lineplot(y=accuracy, x=range(1, len(accuracy) + 1), marker='o', ax=axes[0])
-    sns.lineplot(y=loss, x=range(1, len(loss) + 1), marker='o', ax=axes[1])
-    axes[0].set_title('Accuracy')
-    axes[1].set_title('Loss')
-
-    # Mostrar gráficos en Streamlit
-    st.pyplot(fig)
+    model = load_model()
+    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
 
     # Evaluación del modelo
     _, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
     st.write(f'**Accuracy del modelo en datos de prueba:** {round(test_accuracy * 100, 2)}%')
+
+    # Gráficos de Accuracy y Loss (si el modelo tiene historial de entrenamiento)
+    if hasattr(model, "history"):
+        accuracy = model.history['accuracy']
+        loss = model.history['loss']
+
+        fig, axes = plt.subplots(1, 2, figsize=(10, 3))
+        sns.lineplot(y=accuracy, x=range(1, len(accuracy) + 1), marker='o', ax=axes[0])
+        sns.lineplot(y=loss, x=range(1, len(loss) + 1), marker='o', ax=axes[1])
+        axes[0].set_title('Accuracy')
+        axes[1].set_title('Loss')
+
+        # Mostrar gráficos en Streamlit
+        st.pyplot(fig)
+    else:
+        st.write("No se encontró historial de entrenamiento en el modelo.")
 
 
 
