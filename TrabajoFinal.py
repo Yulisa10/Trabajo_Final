@@ -202,35 +202,40 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
     ### Conclusión Final:
     El **XGBoost Classifier** fue seleccionado como el mejor modelo debido a su alto rendimiento, capacidad para manejar el desequilibrio de clases, interpretabilidad de las características, eficiencia y robustez ante el overfitting. Estos factores lo convierten en la opción más adecuada para la tarea de predecir la ocupación de habitaciones, superando a otros modelos como Random Forest, Decision Tree, KNN y la red neuronal en este contexto específico.
     """)
-# Cargar el modelo XGBoost
-def load_model(filename="xgb_model.pkl.gz"):
-    with gzip.open(filename, "rb") as f:
-        return pickle.load(f)
 
-# Lista de nombres de las variables (ajustar según el dataset)
-feature_names = ["Temperatura", "Humedad", "Luz", "CO2"]
+# Cargar el modelo
+filename = "xgb_model.pkl.gz"
+with gzip.open(filename, "rb") as f:
+    model = pickle.load(f)
+
+# Simular nombres de variables (reemplázalos con los nombres reales de tu dataset)
+nombres_variables = ["Var1", "Var2", "Var3", "Var4"]  # Ajusta según corresponda
+
+# Simular medias de las variables (reemplázalas con valores reales si los tienes)
+medias_variables = [2.5, 3.8, 1.2, 4.5]  # Ajusta según corresponda
 
 # Interfaz en Streamlit
-st.subheader("Modelo planteado con XGBoost")
-
-# Cargar modelo
-model = load_model()
-
-# Entrada manual de valores
+st.title("Predicción con Modelo XGBoost")
 st.subheader("Ingrese los valores para la predicción")
-user_input = {}
-for feature in feature_names:
-    user_input[feature] = st.number_input(f"{feature}", value=0.0)
+
+# Crear campos de entrada con valores predeterminados
+ingresos_usuario = []
+for i, nombre in enumerate(nombres_variables):
+    valor = st.number_input(f"{nombre}", value=medias_variables[i])
+    ingresos_usuario.append(valor)
 
 # Convertir entrada a array numpy
-input_array = np.array(list(user_input.values())).reshape(1, -1)
+input_array = np.array(ingresos_usuario).reshape(1, -1)
 
 # Botón de predicción
 if st.button("Predecir"):
     prediction = model.predict(input_array)[0]
-    resultado = "🟢 Ocupado" if prediction == 1 else "🔴 No Ocupado"
+    
     st.subheader("Resultado de la Predicción")
-    st.markdown(f"### {resultado}")
+    if prediction == 1:
+        st.success("🔴 **Ocupado**")
+    else:
+        st.info("🟢 **No Ocupado**")
 
 # Cargar modelo
 modelo = cargar_modelo()
