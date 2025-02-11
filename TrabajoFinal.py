@@ -220,6 +220,7 @@ except Exception as e:
     st.write(f"Error al cargar el modelo XGBoost: {e}")
 
 # Sección del modelo XGBoost
+
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
     
