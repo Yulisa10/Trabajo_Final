@@ -13,6 +13,8 @@ from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 import gzip
 import pickle
+import xgboost as xgb
+
 
 
 # Mostrar la imagen solo en la página de inicio
@@ -205,12 +207,21 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
     
-    @st.cache_resource  # Cachea el modelo para que no se recargue en cada interacción
-    def load_model():
-        filename = "xgb_model.pkl.gz"
-        with gzip.open(filename, "rb") as f:
-            model = pickle.load(f)
-        return model
+  # Cargar el modelo
+filename = "xgb_model.pkl.gz"
+with gzip.open(filename, "rb") as f:
+    model = pickle.load(f)
+
+# Verificar el tipo de objeto
+print(type(model))
+
+# Probar una predicción con datos ficticios
+dummy_input = np.array([[1.2, 3.4, 5.6, 7.8]])  # Ajusta el tamaño según el modelo
+try:
+    prediction = model.predict(dummy_input)
+    print("Predicción de prueba:", prediction)
+except Exception as e:
+    print("Error en la predicción:", e)
 
 # Cargar el modelo
 model = load_model()
