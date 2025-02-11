@@ -249,30 +249,58 @@ def cargar_modelo():
 
     return model
 
-# Cargar el modelo
-model = cargar_modelo()
+# Título de la aplicación
+st.title("📊 Predicción con Redes Neuronales")
 
-# Revisar qué tipo de modelo se cargó
-st.write(f"Modelo cargado: {type(model)}")
+# Descripción breve
+st.markdown(
+    "### 🧠 Exploración del Modelo de Redes Neuronales\n"
+    "¡Bienvenido! Aquí puedes interactuar con un modelo de redes neuronales y ver cómo realiza predicciones.\n"
+    "Ajusta los valores de entrada y observa la predicción junto con una visualización gráfica. 🎨📈"
+)
 
-# Revisar si el modelo tiene input_shape
-if hasattr(model, "input_shape"):
-    st.write(f"El modelo es de Keras, con input_shape: {model.input_shape}")
-else:
-    st.write("El modelo no tiene input_shape, por lo que no es un modelo de Keras.")
+# Función para cargar el modelo
+def cargar_modelo():
+    filename = "best_model.pkl.gz"
+    with gzip.open(filename, "rb") as f:
+        modelo = pickle.load(f)
+    return modelo
 
-    # Gráficos de Accuracy y Loss (si el modelo tiene historial de entrenamiento)
-    if hasattr(model, "history"):
-        accuracy = model.history['accuracy']
-        loss = model.history['loss']
+# Cargar modelo
+modelo = cargar_modelo()
 
-        fig, axes = plt.subplots(1, 2, figsize=(10, 3))
-        sns.lineplot(y=accuracy, x=range(1, len(accuracy) + 1), marker='o', ax=axes[0])
-        sns.lineplot(y=loss, x=range(1, len(loss) + 1), marker='o', ax=axes[1])
-        axes[0].set_title('Accuracy')
-        axes[1].set_title('Loss')
+# Mostrar información sobre el modelo
+st.subheader("🔍 Información del modelo cargado")
+st.write(f"Tipo de modelo: `{type(modelo)}`")
 
-        # Mostrar gráficos en Streamlit
+if hasattr(modelo, "summary"):  # Si es un modelo de Keras, mostrar estructura
+    with st.expander("📜 Ver estructura del modelo"):
+        st.text(modelo.summary())
+
+# Sección de entrada interactiva
+st.subheader("📝 Ingresa los valores para la predicción")
+
+# Crear controles de entrada según el modelo
+if hasattr(modelo, "input_shape"):
+    n_features = modelo.input_shape[1]  # Número de características esperadas
+    entradas = []
+    for i in range(n_features):
+        valor = st.slider(f"🔹 Característica {i+1}", -10.0, 10.0, 0.0, step=0.1)
+        entradas.append(valor)
+
+    # Convertir a numpy array
+    input_array = np.array(entradas).reshape(1, -1)
+
+    # Realizar predicción
+    if st.button("🔮 Predecir"):
+        prediccion = modelo.predict(input_array)[0][0]
+        st.success(f"📈 Predicción del modelo: `{prediccion:.4f}`")
+
+        # Graficar predicción
+        fig, ax = plt.subplots()
+        ax.bar(["Predicción"], [prediccion], color="royalblue")
+        ax.set_ylabel("Valor de salida")
+        ax.set_title("📊 Visualización de la Predicción")
         st.pyplot(fig)
-    else:
-        st.write("No se encontró historial de entrenamiento en el modelo.")
+else:
+    st.error("❌ El modelo cargado no parece ser una red neuronal de Keras.")
