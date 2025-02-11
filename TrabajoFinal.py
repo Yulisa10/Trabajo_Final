@@ -210,7 +210,7 @@ elif seccion == "Modelo XGBoost":
         filename = 'xgb_model.pkl.gz'
         with gzip.open(filename, 'rb') as f:
             model = pickle.load(f)
-        return model
+    return model
     
     model = load_model()
     
