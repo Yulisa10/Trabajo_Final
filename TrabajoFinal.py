@@ -39,22 +39,34 @@ seccion = st.sidebar.radio("Tabla de Contenidos",
 def load_data():
     df_train = pd.read_csv("https://raw.githubusercontent.com/JuanPablo9999/Mineria_de_datos_streamlit/main/datatrain.csv")
     df_test = pd.read_csv("https://raw.githubusercontent.com/JuanPablo9999/Mineria_de_datos_streamlit/main/datatest.csv")
-    df = pd.concat([df_train, df_test], axis=0)
-    df.drop(columns=["id", "date"], inplace=True, errors='ignore')
-    return df
-
-df = load_data()
+    df_train = pd.read_csv(datatrain.csv)
+    df_test = pd.read_csv(datatest.csv)
 
 # Preprocesamiento
-def preprocess_data(df):
-    X = df.drop(columns=["Occupancy"], errors='ignore')
-    y = df["Occupancy"]
-    scaler = MinMaxScaler()
-    X_scaled = scaler.fit_transform(X)
-    return X_scaled, y, scaler
+for df in [df_train, df_test]:
+    df.drop(columns=["id", "date"], inplace=True, errors='ignore')
+    return df_train, df_test
 
-X, y, scaler = preprocess_data(df)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+df_train, df_test = load_data()
+
+# Preprocesamiento por separado para train y test
+def preprocess_data(train_df, test_df):
+    X_train = train_df.drop(columns=["Occupancy"], errors='ignore')
+    y_train = train_df["Occupancy"]
+    
+    X_test = test_df.drop(columns=["Occupancy"], errors='ignore')
+    y_test = test_df["Occupancy"]
+    
+    # Ajustar el escalador solo con los datos de entrenamiento y transformarlos
+    scaler = MinMaxScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)  # Usamos el mismo scaler para mantener la coherencia
+
+    return X_train_scaled, X_test_scaled, y_train, y_test, scaler
+
+# Llamar a la función con los nuevos datos
+X_train, X_test, y_train, y_test, scaler = preprocess_data(df_train, df_test)
+
 
 # Mostrar contenido basado en la selección
 if seccion == "Vista previa de los datos":
@@ -202,53 +214,33 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
     El **XGBoost Classifier** fue seleccionado como el mejor modelo debido a su alto rendimiento, capacidad para manejar el desequilibrio de clases, interpretabilidad de las características, eficiencia y robustez ante el overfitting. Estos factores lo convierten en la opción más adecuada para la tarea de predecir la ocupación de habitaciones, superando a otros modelos como Random Forest, Decision Tree, KNN y la red neuronal en este contexto específico.
     """)
 
-# Cargar el modelo
-filename = "xgb_model.pkl.gz"
-with gzip.open(filename, "rb") as f:
-    model = pickle.load(f)
+# Normalizar datos
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-# Simular nombres de variables (reemplázalos con los nombres reales de tu dataset)
-nombres_variables = ["Var1", "Var2", "Var3", "Var4"]  # Ajusta según corresponda
+# Definir modelo
+model = Sequential([
+    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    Dense(32, activation='relu'),
+    Dense(1, activation='sigmoid')  # Cambia a 'softmax' si tienes más de dos clases
+])
 
-# Simular medias de las variables (reemplázalas con valores reales si los tienes)
-medias_variables = [2.5, 3.8, 1.2, 4.5]  # Ajusta según corresponda
+# Compilar y entrenar
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # Cambia loss si es regresión
+model.fit(X_train_scaled, y_train, epochs=50, batch_size=10, verbose=1)
 
+# **Realizar predicciones solo en df_test**
+predictions = model.predict(X_test_scaled)
 
-# Cargar modelo
-modelo = cargar_modelo()
+# Evaluar resultados
+loss, accuracy = model.evaluate(X_test_scaled, y_test)
+print(f"Loss: {loss}, Accuracy: {accuracy}")
 
-# Mostrar información sobre el modelo
-st.subheader("🔍 Información del modelo cargado")
-st.write(f"Tipo de modelo: `{type(modelo)}`")
-
-if hasattr(modelo, "summary"):  # Si es un modelo de Keras, mostrar estructura
-    with st.expander("📜 Ver estructura del modelo"):
-        st.text(modelo.summary())
-
-# Sección de entrada interactiva
-st.subheader("📝 Ingresa los valores para la predicción")
-
-# Crear controles de entrada según el modelo
-if hasattr(modelo, "input_shape"):
-    n_features = modelo.input_shape[1]  # Número de características esperadas
-    entradas = []
-    for i in range(n_features):
-        valor = st.slider(f"🔹 Característica {i+1}", -10.0, 10.0, 0.0, step=0.1)
-        entradas.append(valor)
-
-    # Convertir a numpy array
-    input_array = np.array(entradas).reshape(1, -1)
-
-    # Realizar predicción
-    if st.button("🔮 Predecir"):
-        prediccion = modelo.predict(input_array)[0][0]
-        st.success(f"📈 Predicción del modelo: `{prediccion:.4f}`")
-
-        # Graficar predicción
-        fig, ax = plt.subplots()
-        ax.bar(["Predicción"], [prediccion], color="royalblue")
-        ax.set_ylabel("Valor de salida")
-        ax.set_title("📊 Visualización de la Predicción")
-        st.pyplot(fig)
-else:
-    st.error("❌ El modelo cargado no parece ser una red neuronal de Keras.")
+# Comparar predicciones con valores reales
+plt.figure(figsize=(8,5))
+sns.histplot(y_test, color="blue", label="Real", kde=True)
+sns.histplot(predictions.flatten(), color="red", label="Predicho", kde=True)
+plt.legend()
+plt.title("Distribución de valores reales vs predichos")
+plt.show()
