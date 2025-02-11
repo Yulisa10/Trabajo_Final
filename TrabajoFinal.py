@@ -241,27 +241,25 @@ except Exception as e:
         st.write(f"Predicción del modelo: {'Ocupado' if prediction == 1 else 'No Ocupado'}")
 
 
-
-# Cargar el modelo correctamente
-@st.cache_resource
+# Función para cargar el modelo
 def cargar_modelo():
     filename = "best_model.pkl.gz"
-    
     with gzip.open(filename, "rb") as f:
-        with open("temp_model.h5", "wb") as temp_f:
-            temp_f.write(f.read())  # Extraer el archivo comprimido
+        model = pickle.load(f)  # Intentar cargar con pickle
 
-    modelo = load_model("temp_model.h5")  # Cargar el modelo Keras
-    modelo.compile(loss="binary_crossentropy", optimizer=Adam(), metrics=["accuracy"])
-    return modelo
-# Crear un input de prueba
-dummy_input = np.random.rand(1, model.input_shape[1])  # Ajusta la dimensión según el modelo
+    return model
 
-try:
-    prediction = model.predict(dummy_input)
-    st.write("Predicción de prueba:", prediction)
-except Exception as e:
-    st.error(f"Error en la predicción: {e}")
+# Cargar el modelo
+model = cargar_modelo()
+
+# Revisar qué tipo de modelo se cargó
+st.write(f"Modelo cargado: {type(model)}")
+
+# Revisar si el modelo tiene input_shape
+if hasattr(model, "input_shape"):
+    st.write(f"El modelo es de Keras, con input_shape: {model.input_shape}")
+else:
+    st.write("El modelo no tiene input_shape, por lo que no es un modelo de Keras.")
 
     # Gráficos de Accuracy y Loss (si el modelo tiene historial de entrenamiento)
     if hasattr(model, "history"):
