@@ -242,20 +242,26 @@ except Exception as e:
 
 
 
-# Sección del modelo de redes neuronales
-elif seccion == "Modelo de redes neuronales":
-    st.subheader("Modelo planteado con redes neuronales")
+# Cargar el modelo correctamente
+@st.cache_resource
+def cargar_modelo():
+    filename = "best_model.pkl.gz"
+    
+    with gzip.open(filename, "rb") as f:
+        with open("temp_model.h5", "wb") as temp_f:
+            temp_f.write(f.read())  # Extraer el archivo comprimido
 
-     # Cargar el modelo
-filename = "best_model.pkl.gz"
-with gzip.open(filename, "rb") as f:
-    model = pickle.load(f)
-    model = load_model()
-    model.compile(loss='binary_crossentropy', optimizer=Adam(), metrics=['accuracy'])
+    modelo = load_model("temp_model.h5")  # Cargar el modelo Keras
+    modelo.compile(loss="binary_crossentropy", optimizer=Adam(), metrics=["accuracy"])
+    return modelo
+# Crear un input de prueba
+dummy_input = np.random.rand(1, model.input_shape[1])  # Ajusta la dimensión según el modelo
 
-    # Evaluación del modelo
-    _, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
-    st.write(f'**Accuracy del modelo en datos de prueba:** {round(test_accuracy * 100, 2)}%')
+try:
+    prediction = model.predict(dummy_input)
+    st.write("Predicción de prueba:", prediction)
+except Exception as e:
+    st.error(f"Error en la predicción: {e}")
 
     # Gráficos de Accuracy y Loss (si el modelo tiene historial de entrenamiento)
     if hasattr(model, "history"):
