@@ -14,15 +14,6 @@ from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_sc
 import gzip
 import pickle
 
-model_path = "best_model.pkl.gz"  # Asegúrate de usar el archivo correcto
-
-# Cargar el modelo
-try:
-    with gzip.open(model_path, "rb") as f:
-        model = pickle.load(f)
-    print("Modelo cargado correctamente.")
-except Exception as e:
-    print(f"Error al cargar el modelo: {e}")
 
 # Mostrar la imagen solo en la página de inicio
 st.title("Análisis de Detección de Ocupación")
