@@ -16,6 +16,7 @@ import pickle
 import xgboost as xgb
 
 
+
 # Mostrar la imagen solo en la página de inicio
 st.title("Análisis de Detección de Ocupación")
 st.write("Grupo: Yulisa Ortiz Giraldo y Juan Pablo Noreña Londoño")
@@ -214,6 +215,10 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
     El **XGBoost Classifier** fue seleccionado como el mejor modelo debido a su alto rendimiento, capacidad para manejar el desequilibrio de clases, interpretabilidad de las características, eficiencia y robustez ante el overfitting. Estos factores lo convierten en la opción más adecuada para la tarea de predecir la ocupación de habitaciones, superando a otros modelos como Random Forest, Decision Tree, KNN y la red neuronal en este contexto específico.
     """)
 
+# Nueva sección: Modelo XGBoost
+elif seccion == "Modelo XGBoost":
+    st.subheader(" Selección del Mejor Modelo (XGBoost)")
+    st.markdown("""
 # Normalizar datos
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
@@ -244,3 +249,5 @@ sns.histplot(predictions.flatten(), color="red", label="Predicho", kde=True)
 plt.legend()
 plt.title("Distribución de valores reales vs predichos")
 plt.show()
+
+""")
