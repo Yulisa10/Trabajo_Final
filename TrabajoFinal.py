@@ -214,28 +214,6 @@ nombres_variables = ["Var1", "Var2", "Var3", "Var4"]  # Ajusta según correspond
 # Simular medias de las variables (reemplázalas con valores reales si los tienes)
 medias_variables = [2.5, 3.8, 1.2, 4.5]  # Ajusta según corresponda
 
-# Interfaz en Streamlit
-st.title("Predicción con Modelo XGBoost")
-st.subheader("Ingrese los valores para la predicción")
-
-# Crear campos de entrada con valores predeterminados
-ingresos_usuario = []
-for i, nombre in enumerate(nombres_variables):
-    valor = st.number_input(f"{nombre}", value=medias_variables[i])
-    ingresos_usuario.append(valor)
-
-# Convertir entrada a array numpy
-input_array = np.array(ingresos_usuario).reshape(1, -1)
-
-# Botón de predicción
-if st.button("Predecir"):
-    prediction = model.predict(input_array)[0]
-    
-    st.subheader("Resultado de la Predicción")
-    if prediction == 1:
-        st.success("🔴 **Ocupado**")
-    else:
-        st.info("🟢 **No Ocupado**")
 
 # Cargar modelo
 modelo = cargar_modelo()
