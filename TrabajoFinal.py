@@ -205,12 +205,12 @@ elif seccion == "Conclusión: Selección del Mejor Modelo":
 elif seccion == "Modelo XGBoost":
     st.subheader("Modelo planteado con XGBoost")
     
-@st.cache_resource  # Cachea el modelo para que no se recargue en cada interacción
-def load_model():
-    filename = "xgb_model.pkl.gz"
-    with gzip.open(filename, "rb") as f:
-        model = pickle.load(f)
-    return model
+    @st.cache_resource  # Cachea el modelo para que no se recargue en cada interacción
+    def load_model():
+        filename = "xgb_model.pkl.gz"
+        with gzip.open(filename, "rb") as f:
+            model = pickle.load(f)
+        return model
 
 # Cargar el modelo
 model = load_model()
